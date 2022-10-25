@@ -1,3 +1,4 @@
+from django.urls import is_valid_path
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from post.models import *
@@ -37,6 +38,17 @@ class ArticleSingleView(APIView):
         except:
             return Response({'message': 'something went wrong in articles'}, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, id):
+        try:
+            article = Article.objects.get(id=id)
+            serializer = ArticleSerializer(article, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({'message': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ReviewView(APIView):
     def get(self, request):
@@ -66,3 +78,16 @@ class ReviewSingleView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
             return Response({'message': 'something went wrong in reviews'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def put(self, request, id):
+        try:
+            review = Review.objects.get(id=id)
+            serializer = ReviewSerializer(review, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({'message': 'something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
