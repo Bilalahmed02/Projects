@@ -1,4 +1,3 @@
-from django.urls import is_valid_path
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from post.models import *
@@ -29,6 +28,8 @@ class ArticleView(APIView):
             return Response({'message': 'something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
 class ArticleSingleView(APIView):
     def get(self, request, id):
         try:
@@ -49,6 +50,12 @@ class ArticleSingleView(APIView):
         except:
             return Response({'message': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, id):
+        try:
+            articles = Article.objects.get(id=id).delete()
+            return Response({"message": "data has been deleted"}, status=status.HTTP_200_OK)
+        except:
+            return Response({'message': 'item does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 class ReviewView(APIView):
     def get(self, request):
@@ -91,3 +98,9 @@ class ReviewSingleView(APIView):
         except:
             return Response({'message': 'something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, id):
+        try:
+            review = Review.objects.get(id=id).delete()
+            return Response({'message': 'data has been deleted'}, status=status.HTTP_200_OK)
+        except:
+            return Response({"message": "item with this ID does not exist"}, status=status.HTTP_404_NOT_FOUND)
